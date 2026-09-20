@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     tanstackStart({
-      server: { entry: "server" },
+      server: { entry: "./src/server.ts" },
     }),
     nitro({
       preset: "vercel",
