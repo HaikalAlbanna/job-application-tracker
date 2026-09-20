@@ -1,0 +1,187 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Recruitment status palette */
+  --color-status-baru: var(--status-baru);
+  --color-status-menunggu: var(--status-menunggu);
+  --color-status-screening: var(--status-screening);
+  --color-status-tes: var(--status-tes);
+  --color-status-interview-hr: var(--status-interview-hr);
+  --color-status-interview-user: var(--status-interview-user);
+  --color-status-offering: var(--status-offering);
+  --color-status-diterima: var(--status-diterima);
+  --color-status-ditolak: var(--status-ditolak);
+  --color-status-mundur: var(--status-mundur);
+  --color-status-tidak-ada-kabar: var(--status-tidak-ada-kabar);
+  --color-status-ditutup: var(--status-ditutup);
+
+  --shadow-card: var(--shadow-card);
+  --shadow-float: var(--shadow-float);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.975 0.006 85);
+  --foreground: oklch(0.2 0.03 220);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.03 220);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.03 220);
+  --primary: oklch(0.42 0.09 195);
+  --primary-foreground: oklch(0.985 0.005 95);
+  --primary-soft: oklch(0.93 0.035 190);
+  --secondary: oklch(0.94 0.012 85);
+  --secondary-foreground: oklch(0.28 0.03 220);
+  --muted: oklch(0.95 0.008 85);
+  --muted-foreground: oklch(0.5 0.025 230);
+  --accent: oklch(0.93 0.035 190);
+  --accent-foreground: oklch(0.3 0.06 200);
+  --destructive: oklch(0.58 0.2 25);
+  --destructive-foreground: oklch(0.985 0.005 95);
+  --success: oklch(0.6 0.15 150);
+  --warning: oklch(0.75 0.15 75);
+  --border: oklch(0.9 0.012 85);
+  --input: oklch(0.88 0.012 85);
+  --ring: oklch(0.55 0.09 195);
+  --sidebar: oklch(0.985 0.005 95);
+  --sidebar-foreground: oklch(0.2 0.03 220);
+  --sidebar-primary: oklch(0.42 0.09 195);
+  --sidebar-primary-foreground: oklch(0.985 0.005 95);
+  --sidebar-accent: oklch(0.93 0.035 190);
+  --sidebar-accent-foreground: oklch(0.3 0.06 200);
+  --sidebar-border: oklch(0.9 0.012 85);
+  --sidebar-ring: oklch(0.55 0.09 195);
+
+  --status-baru: oklch(0.55 0.15 250);
+  --status-menunggu: oklch(0.65 0.13 75);
+  --status-screening: oklch(0.55 0.12 200);
+  --status-tes: oklch(0.55 0.14 300);
+  --status-interview-hr: oklch(0.6 0.15 330);
+  --status-interview-user: oklch(0.55 0.16 350);
+  --status-offering: oklch(0.65 0.15 60);
+  --status-diterima: oklch(0.55 0.15 150);
+  --status-ditolak: oklch(0.55 0.2 25);
+  --status-mundur: oklch(0.5 0.03 260);
+  --status-tidak-ada-kabar: oklch(0.6 0.02 80);
+  --status-ditutup: oklch(0.45 0.02 40);
+
+  --shadow-card: 0 1px 2px oklch(0.2 0.03 220 / 0.05), 0 8px 24px -12px oklch(0.2 0.03 220 / 0.12);
+  --shadow-float: 0 12px 40px -12px oklch(0.42 0.09 195 / 0.35);
+}
+
+.dark {
+  --background: oklch(0.16 0.02 230);
+  --foreground: oklch(0.96 0.005 95);
+  --card: oklch(0.21 0.02 230);
+  --card-foreground: oklch(0.96 0.005 95);
+  --popover: oklch(0.21 0.02 230);
+  --popover-foreground: oklch(0.96 0.005 95);
+  --primary: oklch(0.75 0.1 190);
+  --primary-foreground: oklch(0.18 0.03 220);
+  --primary-soft: oklch(0.3 0.05 195);
+  --secondary: oklch(0.27 0.02 230);
+  --secondary-foreground: oklch(0.96 0.005 95);
+  --muted: oklch(0.27 0.02 230);
+  --muted-foreground: oklch(0.7 0.02 230);
+  --accent: oklch(0.3 0.05 195);
+  --accent-foreground: oklch(0.9 0.05 190);
+  --destructive: oklch(0.65 0.19 25);
+  --destructive-foreground: oklch(0.985 0.005 95);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.7 0.1 190);
+  --sidebar: oklch(0.21 0.02 230);
+  --sidebar-foreground: oklch(0.96 0.005 95);
+  --sidebar-primary: oklch(0.75 0.1 190);
+  --sidebar-primary-foreground: oklch(0.18 0.03 220);
+  --sidebar-accent: oklch(0.3 0.05 195);
+  --sidebar-accent-foreground: oklch(0.9 0.05 190);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.7 0.1 190);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@utility field {
+  display: flex;
+  height: 2.5rem;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-input);
+  background-color: var(--color-card);
+  padding-inline: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-foreground);
+  transition: box-shadow 150ms, border-color 150ms;
+  &:focus {
+    outline: none;
+    border-color: var(--color-ring);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-ring) 20%, transparent);
+  }
+  &::placeholder {
+    color: var(--color-muted-foreground);
+  }
+}
+
+@utility surface {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+}
