@@ -1,4 +1,4 @@
-//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-BFXISP3b.js
+//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-BGJx_S2N.js
 var tsrStartManifest = () => ({ routes: {
 	__root__: {
 		filePath: "C:/D/project/job-application-tracker/src/routes/__root.tsx",
@@ -10,69 +10,69 @@ var tsrStartManifest = () => ({ routes: {
 			"/lamaran/",
 			"/lamaran/$id/edit"
 		],
-		preloads: ["/assets/index-Cad5ce0Y.js"],
+		preloads: ["/assets/index--41b-zzt.js"],
 		scripts: [{ attrs: {
 			type: "module",
 			async: !0,
-			src: "/assets/index-Cad5ce0Y.js"
+			src: "/assets/index--41b-zzt.js"
 		} }]
 	},
 	"/": {
 		filePath: "C:/D/project/job-application-tracker/src/routes/index.tsx",
 		children: void 0,
 		preloads: [
-			"/assets/routes-B-SlsJ73.js",
-			"/assets/circle-check-Lv3daH27.js",
-			"/assets/StatusBadge-m7n8m-4V.js",
-			"/assets/useApplications-C5AF0uxZ.js"
+			"/assets/routes-BdJD9k2o.js",
+			"/assets/circle-check-D5ChSGuj.js",
+			"/assets/StatusBadge-_4BqA2Ym.js",
+			"/assets/useApplications-CZ65vy-g.js"
 		]
 	},
 	"/import": {
 		filePath: "C:/D/project/job-application-tracker/src/routes/import.tsx",
 		children: void 0,
 		preloads: [
-			"/assets/import-BTeCVhoH.js",
-			"/assets/circle-check-Lv3daH27.js",
-			"/assets/excel-Bldau5Me.js",
-			"/assets/StatusBadge-m7n8m-4V.js"
+			"/assets/import-C4Hz6_uW.js",
+			"/assets/circle-check-D5ChSGuj.js",
+			"/assets/excel-x61KXMys.js",
+			"/assets/StatusBadge-_4BqA2Ym.js"
 		]
 	},
 	"/panduan": {
 		filePath: "C:/D/project/job-application-tracker/src/routes/panduan.tsx",
 		children: void 0,
 		preloads: [
-			"/assets/panduan-SDalPsSY.js",
-			"/assets/excel-Bldau5Me.js",
-			"/assets/StatusBadge-m7n8m-4V.js"
+			"/assets/panduan-Ccyfdxb3.js",
+			"/assets/excel-x61KXMys.js",
+			"/assets/StatusBadge-_4BqA2Ym.js"
 		]
 	},
 	"/lamaran/baru": {
 		filePath: "C:/D/project/job-application-tracker/src/routes/lamaran.baru.tsx",
 		children: void 0,
 		preloads: [
-			"/assets/lamaran.baru-DGnPf6u6.js",
-			"/assets/ApplicationForm-CxNWFzhF.js",
-			"/assets/StatusBadge-m7n8m-4V.js"
+			"/assets/lamaran.baru-KHHSa76V.js",
+			"/assets/ApplicationForm-CGvGuomq.js",
+			"/assets/StatusBadge-_4BqA2Ym.js"
 		]
 	},
 	"/lamaran/": {
 		filePath: "C:/D/project/job-application-tracker/src/routes/lamaran.index.tsx",
 		children: void 0,
 		preloads: [
-			"/assets/lamaran.index-DrDd-T-3.js",
-			"/assets/excel-Bldau5Me.js",
-			"/assets/StatusBadge-m7n8m-4V.js",
-			"/assets/useApplications-C5AF0uxZ.js"
+			"/assets/lamaran.index-kTd94JWu.js",
+			"/assets/excel-x61KXMys.js",
+			"/assets/StatusBadge-_4BqA2Ym.js",
+			"/assets/useApplications-CZ65vy-g.js"
 		]
 	},
 	"/lamaran/$id/edit": {
 		filePath: "C:/D/project/job-application-tracker/src/routes/lamaran.$id.edit.tsx",
 		children: void 0,
 		preloads: [
-			"/assets/lamaran._id.edit-CMcW3L43.js",
-			"/assets/ApplicationForm-CxNWFzhF.js",
-			"/assets/StatusBadge-m7n8m-4V.js",
-			"/assets/useApplications-C5AF0uxZ.js"
+			"/assets/lamaran._id.edit-CoN1SBie.js",
+			"/assets/ApplicationForm-CGvGuomq.js",
+			"/assets/StatusBadge-_4BqA2Ym.js",
+			"/assets/useApplications-CZ65vy-g.js"
 		]
 	}
 } });

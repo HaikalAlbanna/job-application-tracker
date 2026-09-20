@@ -1,0 +1,1 @@
+import{_ as e,v as t}from"./index--41b-zzt.js";import{s as n}from"./StatusBadge-_4BqA2Ym.js";var r=t(e(),1),i=()=>()=>{};function a(){return(0,r.useSyncExternalStore)(n.subscribe,n.getSnapshot,n.getServerSnapshot)}function o(){return(0,r.useSyncExternalStore)(i,()=>!0,()=>!1)}export{o as n,a as t};

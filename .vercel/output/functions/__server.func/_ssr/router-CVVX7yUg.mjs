@@ -6,10 +6,10 @@ import { t as Toaster } from "../_libs/sonner.mjs";
 import { t as Route$6 } from "./lamaran._id.edit-DcY9aWYg.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-fAG_RSKR.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-CVVX7yUg.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-CjffkK0g.css";
+var styles_default = "/assets/styles-BSCBi6Uf.css";
 function reportRuntimeError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__appRuntimeEvents?.captureException?.(error, {
