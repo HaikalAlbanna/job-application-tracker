@@ -1,0 +1,5 @@
+{
+  "error": true,
+  "status": 500,
+  "unhandled": true
+}
