@@ -132,6 +132,30 @@ export function parseDateFlexible(raw: unknown): string | null {
 const STORAGE_KEY = "job-tracker:applications:v1";
 const EMPTY: JobApplication[] = [];
 
+function isValidApplication(value: unknown): value is JobApplication {
+  if (value == null || typeof value !== "object") return false;
+
+  const app = value as Record<string, unknown>;
+  return (
+    typeof app.id === "string" &&
+    typeof app.company === "string" &&
+    typeof app.position === "string" &&
+    typeof app.link === "string" &&
+    typeof app.status === "string" &&
+    isStatus(app.status) &&
+    typeof app.appliedDate === "string" &&
+    typeof app.notes === "string" &&
+    typeof app.createdAt === "string" &&
+    typeof app.updatedAt === "string"
+  );
+}
+
+function sanitizeApplications(value: unknown): JobApplication[] {
+  if (!Array.isArray(value)) return [];
+  const cleaned = value.filter(isValidApplication);
+  return cleaned;
+}
+
 let cache: JobApplication[] | null = null;
 const listeners = new Set<() => void>();
 
@@ -141,7 +165,17 @@ function read(): JobApplication[] {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     const parsed = raw ? (JSON.parse(raw) as unknown) : [];
-    cache = Array.isArray(parsed) ? (parsed as JobApplication[]) : [];
+    const sanitized = sanitizeApplications(parsed);
+    if (sanitized.length !== (Array.isArray(parsed) ? parsed.length : 0)) {
+      cache = sanitized;
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
+      } catch {
+        // ignore write failures; keep the app usable even with a broken storage payload
+      }
+      return cache;
+    }
+    cache = sanitized;
   } catch {
     cache = [];
   }
