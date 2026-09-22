@@ -137,16 +137,16 @@ function isValidApplication(value: unknown): value is JobApplication {
 
   const app = value as Record<string, unknown>;
   return (
-    typeof app.id === "string" &&
-    typeof app.company === "string" &&
-    typeof app.position === "string" &&
-    typeof app.link === "string" &&
-    typeof app.status === "string" &&
-    isStatus(app.status) &&
-    typeof app.appliedDate === "string" &&
-    typeof app.notes === "string" &&
-    typeof app.createdAt === "string" &&
-    typeof app.updatedAt === "string"
+    typeof app["id"] === "string" &&
+    typeof app["company"] === "string" &&
+    typeof app["position"] === "string" &&
+    typeof app["link"] === "string" &&
+    typeof app["status"] === "string" &&
+    isStatus(app["status"]) &&
+    typeof app["appliedDate"] === "string" &&
+    typeof app["notes"] === "string" &&
+    typeof app["createdAt"] === "string" &&
+    typeof app["updatedAt"] === "string"
   );
 }
 

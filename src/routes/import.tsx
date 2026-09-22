@@ -80,7 +80,7 @@ function ImportPage() {
         }
       />
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div>
           {!rows && (
             <label
@@ -144,8 +144,8 @@ function ImportPage() {
                   </Button>
                 </div>
               </div>
-              <div className="max-h-[520px] overflow-auto">
-                <table className="w-full min-w-[820px] text-sm">
+              <div className="max-h-130 overflow-auto">
+                <table className="w-full min-w-205 text-sm">
                   <thead className="sticky top-0 bg-card">
                     <tr className="border-b text-left text-xs uppercase tracking-wide text-muted-foreground">
                       <th className="px-4 py-2 font-semibold">#</th>
