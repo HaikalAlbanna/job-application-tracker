@@ -418,6 +418,45 @@ var ExternalLink = createLucideIcon("external-link", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var EyeOff = createLucideIcon("eye-off", [
+	["path", {
+		d: "M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49",
+		key: "ct8e1f"
+	}],
+	["path", {
+		d: "M14.084 14.158a3 3 0 0 1-4.242-4.242",
+		key: "151rxh"
+	}],
+	["path", {
+		d: "M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143",
+		key: "13bj9a"
+	}],
+	["path", {
+		d: "m2 2 20 20",
+		key: "1ooewy"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Eye = createLucideIcon("eye", [["path", {
+	d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+	key: "1nclc0"
+}], ["circle", {
+	cx: "12",
+	cy: "12",
+	r: "3",
+	key: "1v7zrd"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var FileSpreadsheet = createLucideIcon("file-spreadsheet", [
 	["path", {
 		d: "M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z",
@@ -725,4 +764,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { BriefcaseBusiness as C, ArrowDownWideNarrow as D, ArrowRight as E, Activity as O, Briefcase as S, ArrowUpNarrowWide as T, Download as _, Search as a, CircleCheck as b, MessagesSquare as c, ListChecks as d, LayoutDashboard as f, ExternalLink as g, FileSpreadsheet as h, Trash2 as i, LogOut as l, Hourglass as m, Upload as n, Plus as o, Inbox as p, TriangleAlert as r, Pencil as s, X as t, LogIn as u, ClipboardList as v, BookOpen as w, CalendarDays as x, CircleX as y };
+export { Activity as A, CalendarDays as C, ArrowUpNarrowWide as D, BookOpen as E, ArrowRight as O, CircleCheck as S, BriefcaseBusiness as T, EyeOff as _, Search as a, ClipboardList as b, MessagesSquare as c, ListChecks as d, LayoutDashboard as f, Eye as g, FileSpreadsheet as h, Trash2 as i, ArrowDownWideNarrow as k, LogOut as l, Hourglass as m, Upload as n, Plus as o, Inbox as p, TriangleAlert as r, Pencil as s, X as t, LogIn as u, ExternalLink as v, Briefcase as w, CircleX as x, Download as y };

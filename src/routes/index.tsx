@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 import {
   Briefcase,
   Activity,
@@ -18,6 +19,7 @@ import { PageHeader } from "@/components/app/AppShell";
 import { StatusBadge, STATUS_DOT } from "@/components/app/StatusBadge";
 import { useApplications, useHydrated } from "@/hooks/useApplications";
 import { STATUSES, STATUS_MAP, formatDateID, monthLabel, type JobApplication } from "@/lib/applications";
+import { signOut } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/")({
@@ -47,9 +49,25 @@ function computeStats(apps: JobApplication[]) {
 }
 
 function Dashboard() {
+  const navigate = useNavigate();
   const apps = useApplications();
   const hydrated = useHydrated();
+  const [loggingOut, setLoggingOut] = useState(false);
   const stats = useMemo(() => computeStats(apps), [apps]);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await signOut();
+      toast.success("Berhasil logout.");
+      navigate({ to: "/auth/login" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Gagal logout.";
+      toast.error(message);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   const byStatus = useMemo(
     () => STATUSES.map((s) => ({ ...s, count: apps.filter((a) => a.status === s.value).length })),
@@ -93,6 +111,10 @@ function Dashboard() {
         description="Ringkasan seluruh lamaran kerja Anda. Diperbarui otomatis saat data berubah."
         actions={
           <>
+            <Button variant="outline" onClick={handleLogout} disabled={loggingOut}>
+              <LogOut className="size-4" />
+              {loggingOut ? "Logout..." : "Logout"}
+            </Button>
             <Button asChild variant="outline">
               <Link to="/import">
                 <FileSpreadsheet /> Import Excel

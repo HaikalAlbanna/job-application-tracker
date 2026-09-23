@@ -286,14 +286,14 @@ export const applicationStore = {
   },
   getSnapshot: () => {
     if (typeof window !== "undefined" && cache === null) {
+      cache = readLocalStorage();
       if (!syncInFlight) {
         syncInFlight = syncFromSupabase().finally(() => {
           syncInFlight = null;
         });
       }
-      return readLocalStorage();
     }
-    return cache ?? readLocalStorage();
+    return cache ?? EMPTY;
   },
   getServerSnapshot: () => EMPTY,
 };
