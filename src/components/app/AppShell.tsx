@@ -21,8 +21,13 @@ export function AppShell({ children }: { children: ReactNode }) {
     const isAuthRoute = location.pathname.startsWith("/auth");
     const client = getSupabaseClient();
 
-    if (!client || isAuthRoute) {
-      setAuthState(isAuthRoute ? "guest" : "guest");
+    if (isAuthRoute) {
+      setAuthState("guest");
+      return;
+    }
+
+    if (!client) {
+      setAuthState("guest");
       return;
     }
 
@@ -30,22 +35,30 @@ export function AppShell({ children }: { children: ReactNode }) {
 
     client.auth.getSession().then(({ data: { session } }) => {
       if (!active) return;
+
       if (!session) {
         setAuthState("guest");
-        navigate({ to: "/auth/login" });
+        if (location.pathname !== "/auth/login") {
+          navigate({ to: "/auth/login" });
+        }
         return;
       }
+
       setAuthState("authed");
     });
 
     const { data } = client.auth.onAuthStateChange((_event, session) => {
       if (!active) return;
-      if (!session && !isAuthRoute) {
+
+      if (!session) {
         setAuthState("guest");
-        navigate({ to: "/auth/login" });
+        if (location.pathname !== "/auth/login") {
+          navigate({ to: "/auth/login" });
+        }
         return;
       }
-      setAuthState(session ? "authed" : "guest");
+
+      setAuthState("authed");
     });
 
     return () => {

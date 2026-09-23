@@ -1,5 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 
+let supabaseClient: ReturnType<typeof createClient> | null = null;
+
 function readEnv(key: string): string | undefined {
   const importMetaEnv = typeof import.meta !== "undefined" ? (import.meta.env as Record<string, string | undefined> | undefined) : undefined;
   const metaValue = importMetaEnv?.[key];
@@ -14,6 +16,8 @@ function readEnv(key: string): string | undefined {
 export function getSupabaseClient() {
   if (typeof window === "undefined") return null;
 
+  if (supabaseClient) return supabaseClient;
+
   const supabaseUrl = readEnv("VITE_SUPABASE_URL");
   const supabaseAnonKey = readEnv("VITE_SUPABASE_ANON_KEY");
 
@@ -22,13 +26,15 @@ export function getSupabaseClient() {
     return null;
   }
 
-  return createClient(supabaseUrl, supabaseAnonKey, {
+  supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
     },
   });
+
+  return supabaseClient;
 }
 
 export const supabase = typeof window !== "undefined" ? getSupabaseClient() : null;
