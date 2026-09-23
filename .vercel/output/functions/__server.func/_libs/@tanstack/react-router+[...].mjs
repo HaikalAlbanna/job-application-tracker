@@ -1,5 +1,5 @@
 import { i as __toESM, r as __require, t as __commonJSMin } from "../../_runtime.mjs";
-import { f as require_jsx_runtime, p as require_react, u as require_react_dom } from "../@radix-ui/react-alert-dialog+[...].mjs";
+import { h as require_react, m as require_jsx_runtime, u as require_react_dom } from "../@radix-ui/react-alert-dialog+[...].mjs";
 import { r as parseHref } from "../tanstack__history.mjs";
 import { PassThrough, Readable } from "node:stream";
 import { ReadableStream as ReadableStream$1 } from "node:stream/web";
