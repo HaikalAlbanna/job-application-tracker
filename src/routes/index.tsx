@@ -111,18 +111,22 @@ function Dashboard() {
         description="Ringkasan seluruh lamaran kerja Anda. Diperbarui otomatis saat data berubah."
         actions={
           <>
-            <Button variant="outline" onClick={handleLogout} disabled={loggingOut}>
+            <Button variant="outline" size="sm" onClick={handleLogout} disabled={loggingOut} className="gap-1.5 text-xs sm:text-sm">
               <LogOut className="size-4" />
-              {loggingOut ? "Logout..." : "Logout"}
+              <span>{loggingOut ? "Logout..." : "Logout"}</span>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" size="sm" className="gap-1.5 text-xs sm:text-sm">
               <Link to="/import">
-                <FileSpreadsheet /> Import Excel
+                <FileSpreadsheet className="size-4" />
+                <span className="hidden sm:inline">Import Excel</span>
+                <span className="sm:hidden">Import</span>
               </Link>
             </Button>
-            <Button asChild className="shadow-float">
+            <Button asChild size="sm" className="shadow-float gap-1.5 text-xs sm:text-sm">
               <Link to="/lamaran/baru">
-                <Plus /> Tambah Lamaran
+                <Plus className="size-4" />
+                <span className="hidden sm:inline">Tambah Lamaran</span>
+                <span className="sm:hidden">Tambah</span>
               </Link>
             </Button>
           </>

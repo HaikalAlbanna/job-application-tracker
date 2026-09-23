@@ -66,17 +66,18 @@ function ListPage() {
         description={hydrated ? `${apps.length} lamaran tercatat` : "Memuat data..."}
         actions={
           <>
-            <Button variant="outline" onClick={handleExport} disabled={exporting}>
-              <Download /> {exporting ? "Mengekspor..." : "Export Excel"}
+            <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting} className="gap-1.5 text-xs sm:text-sm">
+              <Download className="size-4" />
+              <span>{exporting ? "Mengekspor..." : "Export Excel"}</span>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" size="sm" className="gap-1.5 text-xs sm:text-sm">
               <Link to="/import">
-                <FileSpreadsheet /> Import
+                <FileSpreadsheet className="size-4" /> <span>Import</span>
               </Link>
             </Button>
-            <Button asChild className="shadow-float">
+            <Button asChild size="sm" className="shadow-float gap-1.5 text-xs sm:text-sm">
               <Link to="/lamaran/baru">
-                <Plus /> Tambah
+                <Plus className="size-4" /> <span>Tambah</span>
               </Link>
             </Button>
           </>

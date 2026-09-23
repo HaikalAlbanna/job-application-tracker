@@ -79,8 +79,8 @@ function ImportPage() {
         title="Import Excel"
         description="Masukkan data lamaran lama dari file .xlsx / .xls. Data baru akan ditambahkan tanpa menghapus data yang sudah ada."
         actions={
-          <Button variant="outline" onClick={() => downloadTemplate()}>
-            <Download /> Unduh Template
+          <Button variant="outline" size="sm" onClick={() => downloadTemplate()} className="gap-1.5 text-xs sm:text-sm">
+            <Download className="size-4" /> Unduh Template
           </Button>
         }
       />
