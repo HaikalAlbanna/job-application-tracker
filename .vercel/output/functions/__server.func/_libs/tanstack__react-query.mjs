@@ -1,5 +1,5 @@
 import { i as __toESM } from "../_runtime.mjs";
-import { d as require_jsx_runtime, f as require_react } from "./@radix-ui/react-alert-dialog+[...].mjs";
+import { f as require_jsx_runtime, p as require_react } from "./@radix-ui/react-alert-dialog+[...].mjs";
 //#region node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var import_jsx_runtime = require_jsx_runtime();

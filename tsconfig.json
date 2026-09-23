@@ -6,12 +6,10 @@
     "module": "ESNext",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
-    "baseUrl": ".",
 
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": false,
-    "ignoreDeprecations": "6.0",
     "noEmit": true,
 
     "skipLibCheck": true,

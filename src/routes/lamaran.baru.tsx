@@ -23,10 +23,15 @@ function NewPage() {
       <PageHeader title="Tambah Lamaran" description="Isi data lamaran baru. Tanggal terisi otomatis dengan waktu Indonesia (WIB)." />
       <ApplicationForm
         submitLabel="Simpan Lamaran"
-        onSubmit={(data) => {
-          addApplication(data);
-          toast.success(`Lamaran ${data.position} di ${data.company} tersimpan.`);
-          navigate({ to: "/lamaran" });
+        onSubmit={async (data) => {
+          try {
+            await addApplication(data);
+            toast.success(`Lamaran ${data.position} di ${data.company} tersimpan.`);
+            navigate({ to: "/lamaran" });
+          } catch (error) {
+            const message = error instanceof Error ? error.message : "Gagal menyimpan lamaran.";
+            toast.error(message);
+          }
         }}
       />
     </div>

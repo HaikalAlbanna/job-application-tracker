@@ -12,6 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ImportRouteImport } from './routes/import'
 import { Route as PanduanRouteImport } from './routes/panduan'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
+import { Route as AuthLoginRouteImport } from './routes/auth.login'
+import { Route as AuthRegisterRouteImport } from './routes/auth.register'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as LamaranIndexRouteImport } from './routes/lamaran.index'
 import { Route as LamaranBaruRouteImport } from './routes/lamaran.baru'
 import { Route as LamaranIdEditRouteImport } from './routes/lamaran.$id.edit'
@@ -29,6 +33,26 @@ const ImportRoute = ImportRouteImport.update({
 const PanduanRoute = PanduanRouteImport.update({
   id: '/panduan',
   path: '/panduan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/auth/forgot-password',
+  path: '/auth/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthLoginRoute = AuthLoginRouteImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRegisterRoute = AuthRegisterRouteImport.update({
+  id: '/auth/register',
+  path: '/auth/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/auth/reset-password',
+  path: '/auth/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LamaranIndexRoute = LamaranIndexRouteImport.update({
@@ -51,6 +75,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/import': typeof ImportRoute
   '/panduan': typeof PanduanRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/lamaran/baru': typeof LamaranBaruRoute
   '/lamaran/': typeof LamaranIndexRoute
   '/lamaran/$id/edit': typeof LamaranIdEditRoute
@@ -59,6 +87,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/import': typeof ImportRoute
   '/panduan': typeof PanduanRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/lamaran/baru': typeof LamaranBaruRoute
   '/lamaran': typeof LamaranIndexRoute
   '/lamaran/$id/edit': typeof LamaranIdEditRoute
@@ -68,6 +100,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/import': typeof ImportRoute
   '/panduan': typeof PanduanRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/register': typeof AuthRegisterRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/lamaran/baru': typeof LamaranBaruRoute
   '/lamaran/': typeof LamaranIndexRoute
   '/lamaran/$id/edit': typeof LamaranIdEditRoute
@@ -78,6 +114,10 @@ export interface FileRouteTypes {
     | '/'
     | '/import'
     | '/panduan'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/register'
+    | '/auth/reset-password'
     | '/lamaran/baru'
     | '/lamaran/'
     | '/lamaran/$id/edit'
@@ -86,6 +126,10 @@ export interface FileRouteTypes {
     | '/'
     | '/import'
     | '/panduan'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/register'
+    | '/auth/reset-password'
     | '/lamaran/baru'
     | '/lamaran'
     | '/lamaran/$id/edit'
@@ -94,6 +138,10 @@ export interface FileRouteTypes {
     | '/'
     | '/import'
     | '/panduan'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/register'
+    | '/auth/reset-password'
     | '/lamaran/baru'
     | '/lamaran/'
     | '/lamaran/$id/edit'
@@ -103,6 +151,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ImportRoute: typeof ImportRoute
   PanduanRoute: typeof PanduanRoute
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   LamaranBaruRoute: typeof LamaranBaruRoute
   LamaranIndexRoute: typeof LamaranIndexRoute
   LamaranIdEditRoute: typeof LamaranIdEditRoute
@@ -129,6 +181,34 @@ declare module '@tanstack/react-router' {
       path: '/panduan'
       fullPath: '/panduan'
       preLoaderRoute: typeof PanduanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/auth/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/auth/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lamaran/': {
@@ -159,6 +239,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ImportRoute: ImportRoute,
   PanduanRoute: PanduanRoute,
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
   LamaranBaruRoute: LamaranBaruRoute,
   LamaranIndexRoute: LamaranIndexRoute,
   LamaranIdEditRoute: LamaranIdEditRoute,

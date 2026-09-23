@@ -36,7 +36,7 @@ export function ApplicationTable({ applications, hydrated, emptyMessage }: Props
     <>
       <div className="surface overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[880px] text-sm">
+          <table className="w-full min-w-220 text-sm">
             <thead>
               <tr className="border-b bg-muted/60 text-left text-xs uppercase tracking-wide text-muted-foreground">
                 <th className="px-4 py-3 font-semibold">Perusahaan</th>
@@ -72,10 +72,10 @@ export function ApplicationTable({ applications, hydrated, emptyMessage }: Props
               ) : (
                 applications.map((a) => (
                   <tr key={a.id} className="border-b transition-colors last:border-0 hover:bg-muted/40">
-                    <td className="max-w-[220px] px-4 py-3 font-semibold text-foreground">
+                    <td className="max-w-55 px-4 py-3 font-semibold text-foreground">
                       <span className="line-clamp-2">{a.company}</span>
                     </td>
-                    <td className="max-w-[200px] px-4 py-3 text-foreground">
+                    <td className="max-w-50 px-4 py-3 text-foreground">
                       <span className="line-clamp-2">{a.position}</span>
                     </td>
                     <td className="px-4 py-3">
@@ -98,7 +98,7 @@ export function ApplicationTable({ applications, hydrated, emptyMessage }: Props
                     <td className="whitespace-nowrap px-4 py-3 tabular-nums text-foreground">
                       {formatDateID(a.appliedDate)}
                     </td>
-                    <td className="max-w-[260px] px-4 py-3 text-muted-foreground">
+                    <td className="max-w-65 px-4 py-3 text-muted-foreground">
                       {a.notes ? (
                         <span className="line-clamp-2" title={a.notes}>
                           {a.notes}

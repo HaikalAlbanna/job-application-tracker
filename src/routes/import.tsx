@@ -61,11 +61,16 @@ function ImportPage() {
   const valid = rows?.filter((r) => r.data) ?? [];
   const invalid = rows?.filter((r) => !r.data) ?? [];
 
-  const handleImport = () => {
+  const handleImport = async () => {
     if (valid.length === 0) return;
-    const n = addManyApplications(valid.map((r) => r.data!));
-    toast.success(`${n} data berhasil diimpor.${invalid.length ? ` ${invalid.length} baris dilewati karena tidak valid.` : ""}`);
-    navigate({ to: "/lamaran" });
+    try {
+      const n = await addManyApplications(valid.map((r) => r.data!));
+      toast.success(`${n} data berhasil diimpor.${invalid.length ? ` ${invalid.length} baris dilewati karena tidak valid.` : ""}`);
+      navigate({ to: "/lamaran" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Gagal mengimpor data.";
+      toast.error(message);
+    }
   };
 
   return (

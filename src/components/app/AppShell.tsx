@@ -1,7 +1,9 @@
-import { Link } from "@tanstack/react-router";
-import { BriefcaseBusiness, LayoutDashboard, ListChecks, FileSpreadsheet, BookOpen, Plus } from "lucide-react";
-import type { ReactNode } from "react";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { BriefcaseBusiness, LayoutDashboard, ListChecks, FileSpreadsheet, BookOpen, Plus, LogIn } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+
 import { Button } from "@/components/ui/button";
+import { getSupabaseClient } from "@/lib/supabase";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -11,6 +13,87 @@ const NAV = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [authState, setAuthState] = useState<"loading" | "authed" | "guest">("loading");
+
+  useEffect(() => {
+    const isAuthRoute = location.pathname.startsWith("/auth");
+    const client = getSupabaseClient();
+
+    if (!client || isAuthRoute) {
+      setAuthState(isAuthRoute ? "guest" : "guest");
+      return;
+    }
+
+    let active = true;
+
+    client.auth.getSession().then(({ data: { session } }) => {
+      if (!active) return;
+      if (!session) {
+        setAuthState("guest");
+        navigate({ to: "/auth/login" });
+        return;
+      }
+      setAuthState("authed");
+    });
+
+    const { data } = client.auth.onAuthStateChange((_event, session) => {
+      if (!active) return;
+      if (!session && !isAuthRoute) {
+        setAuthState("guest");
+        navigate({ to: "/auth/login" });
+        return;
+      }
+      setAuthState(session ? "authed" : "guest");
+    });
+
+    return () => {
+      active = false;
+      data.subscription.unsubscribe();
+    };
+  }, [location.pathname, navigate]);
+
+  const isAuthRoute = location.pathname.startsWith("/auth");
+
+  if (isAuthRoute) {
+    return <div className="min-h-screen bg-background">{children}</div>;
+  }
+
+  if (authState === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="surface max-w-md p-8 text-center">
+          <p className="text-sm font-medium text-muted-foreground">Memeriksa sesi akun...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (authState === "guest") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4">
+        <div className="surface max-w-lg p-8 text-center">
+          <div className="mx-auto mb-4 grid size-14 place-items-center rounded-2xl bg-primary-soft text-primary">
+            <LogIn className="size-6" />
+          </div>
+          <h1 className="text-2xl font-extrabold tracking-tight">Login diperlukan</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Silakan masuk untuk mengelola data lamaran kerja Anda.
+          </p>
+          <div className="mt-6 flex justify-center gap-3">
+            <Button asChild>
+              <Link to="/auth/login">Masuk</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/auth/register">Daftar</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 border-b bg-card/80 backdrop-blur">
@@ -53,7 +136,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">{children}</main>
 
       <footer className="mx-auto max-w-7xl px-4 pb-8 text-xs text-muted-foreground sm:px-6">
-        Data tersimpan secara lokal di browser ini. Ekspor ke Excel secara berkala untuk cadangan.
+        Data tersimpan secara aman per akun dan terhubung ke Supabase.
       </footer>
     </div>
   );

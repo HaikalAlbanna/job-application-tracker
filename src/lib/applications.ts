@@ -127,7 +127,9 @@ export function parseDateFlexible(raw: unknown): string | null {
   return null;
 }
 
-/* ---------- Local storage store ---------- */
+/* ---------- Supabase-backed store ---------- */
+
+import { getSupabaseClient } from "./supabase";
 
 const STORAGE_KEY = "job-tracker:applications:v1";
 const EMPTY: JobApplication[] = [];
@@ -152,37 +154,26 @@ function isValidApplication(value: unknown): value is JobApplication {
 
 function sanitizeApplications(value: unknown): JobApplication[] {
   if (!Array.isArray(value)) return [];
-  const cleaned = value.filter(isValidApplication);
-  return cleaned;
+  return value.filter(isValidApplication);
 }
 
-let cache: JobApplication[] | null = null;
-const listeners = new Set<() => void>();
-
-function read(): JobApplication[] {
-  if (cache) return cache;
+function readLocalStorage(): JobApplication[] {
   if (typeof window === "undefined") return EMPTY;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     const parsed = raw ? (JSON.parse(raw) as unknown) : [];
     const sanitized = sanitizeApplications(parsed);
     if (sanitized.length !== (Array.isArray(parsed) ? parsed.length : 0)) {
-      cache = sanitized;
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
-      } catch {
-        // ignore write failures; keep the app usable even with a broken storage payload
-      }
-      return cache;
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(sanitized));
     }
-    cache = sanitized;
+    return sanitized;
   } catch {
-    cache = [];
+    return [];
   }
-  return cache;
 }
 
-function write(next: JobApplication[]) {
+function persistLocalFallback(next: JobApplication[]) {
+  if (typeof window === "undefined") return;
   cache = next;
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
@@ -192,52 +183,278 @@ function write(next: JobApplication[]) {
   listeners.forEach((l) => l());
 }
 
-if (typeof window !== "undefined") {
-  window.addEventListener("storage", (e) => {
-    if (e.key === STORAGE_KEY) {
-      cache = null;
-      listeners.forEach((l) => l());
+function mapDbRow(row: Record<string, unknown>): JobApplication {
+  const status = typeof row["status"] === "string" && isStatus(row["status"]) ? row["status"] : "baru";
+
+  return {
+    id: String(row["id"] ?? cryptoRandomId()),
+    company: String(row["company"] ?? ""),
+    position: String(row["position"] ?? ""),
+    link: String(row["link"] ?? ""),
+    status,
+    appliedDate: String(row["applied_date"] ?? row["appliedDate"] ?? todayWIB()),
+    notes: String(row["notes"] ?? ""),
+    createdAt: String(row["created_at"] ?? row["createdAt"] ?? new Date().toISOString()),
+    updatedAt: String(row["updated_at"] ?? row["updatedAt"] ?? new Date().toISOString()),
+  };
+}
+
+function dbInsertPayload(input: JobApplicationInput) {
+  return {
+    company: input.company,
+    position: input.position,
+    link: input.link,
+    status: input.status,
+    applied_date: input.appliedDate,
+    notes: input.notes,
+  };
+}
+
+let cache: JobApplication[] | null = null;
+let syncInFlight: Promise<void> | null = null;
+const listeners = new Set<() => void>();
+
+function notify() {
+  listeners.forEach((l) => l());
+}
+
+function cryptoRandomId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+async function getCurrentUserId(): Promise<string | null> {
+  const client = getSupabaseClient();
+  if (!client) return null;
+
+  try {
+    const { data: { user }, error } = await client.auth.getUser();
+    if (error || !user) return null;
+    return user.id;
+  } catch {
+    return null;
+  }
+}
+
+async function syncFromSupabase(): Promise<void> {
+  if (typeof window === "undefined") return;
+
+  const client = getSupabaseClient();
+  if (!client) return;
+
+  try {
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      const fallback = readLocalStorage();
+      cache = fallback;
+      notify();
+      return;
     }
-  });
+
+    const { data, error } = await client
+      .from("job_applications")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    const next = (data ?? []).map((row) => mapDbRow(row as Record<string, unknown>));
+    cache = next;
+    try {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+    } catch {
+      // ignore local persistence failures and keep app usable
+    }
+    notify();
+  } catch (e) {
+    console.warn("Gagal mengambil data dari Supabase, fallback ke localStorage.", e);
+    const fallback = readLocalStorage();
+    cache = fallback;
+    notify();
+  }
 }
 
 export const applicationStore = {
   subscribe(listener: () => void) {
     listeners.add(listener);
+    if (typeof window !== "undefined" && !syncInFlight) {
+      syncInFlight = syncFromSupabase().finally(() => {
+        syncInFlight = null;
+      });
+    }
     return () => listeners.delete(listener);
   },
-  getSnapshot: () => read(),
+  getSnapshot: () => {
+    if (typeof window !== "undefined" && cache === null) {
+      if (!syncInFlight) {
+        syncInFlight = syncFromSupabase().finally(() => {
+          syncInFlight = null;
+        });
+      }
+      return readLocalStorage();
+    }
+    return cache ?? readLocalStorage();
+  },
   getServerSnapshot: () => EMPTY,
 };
 
-function newId(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+export async function addApplication(input: JobApplicationInput): Promise<JobApplication> {
+  if (typeof window === "undefined") {
+    return { ...input, id: cryptoRandomId(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+  }
+
+  const client = getSupabaseClient();
+  if (!client) {
+    const local: JobApplication = {
+      ...input,
+      id: cryptoRandomId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    persistLocalFallback([local, ...readLocalStorage()]);
+    return local;
+  }
+
+  try {
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      throw new Error("User belum login. Silakan login terlebih dahulu.");
+    }
+
+    const { data, error } = await client
+      .from("job_applications")
+      .insert({ ...dbInsertPayload(input), user_id: userId })
+      .select()
+      .single();
+
+    if (error) throw error;
+    const created = mapDbRow(data as Record<string, unknown>);
+    const next = [created, ...(cache ?? readLocalStorage())];
+    persistLocalFallback(next);
+    return created;
+  } catch (e) {
+    console.warn("Supabase insert gagal; fallback ke localStorage.", e);
+    const local: JobApplication = {
+      ...input,
+      id: cryptoRandomId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    persistLocalFallback([local, ...readLocalStorage()]);
+    return local;
+  }
 }
 
-export function addApplication(input: JobApplicationInput): JobApplication {
-  const now = new Date().toISOString();
-  const app: JobApplication = { ...input, id: newId(), createdAt: now, updatedAt: now };
-  write([app, ...read()]);
-  return app;
+export async function addManyApplications(inputs: JobApplicationInput[]): Promise<number> {
+  if (inputs.length === 0) return 0;
+
+  const client = getSupabaseClient();
+  if (!client) {
+    const localApps = inputs.map((input) => ({
+      ...input,
+      id: cryptoRandomId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }));
+    persistLocalFallback([...localApps, ...readLocalStorage()]);
+    return localApps.length;
+  }
+
+  try {
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      throw new Error("User belum login. Silakan login terlebih dahulu.");
+    }
+
+    const rows = inputs.map((input) => ({ ...dbInsertPayload(input), user_id: userId }));
+    const { data, error } = await client.from("job_applications").insert(rows).select();
+    if (error) throw error;
+    const imported = (data ?? []).map((row) => mapDbRow(row as Record<string, unknown>));
+    const next = [...imported, ...(cache ?? readLocalStorage())];
+    persistLocalFallback(next);
+    return imported.length;
+  } catch (e) {
+    console.warn("Supabase bulk insert gagal; fallback ke localStorage.", e);
+    const localApps = inputs.map((input) => ({
+      ...input,
+      id: cryptoRandomId(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }));
+    persistLocalFallback([...localApps, ...readLocalStorage()]);
+    return localApps.length;
+  }
 }
 
-export function addManyApplications(inputs: JobApplicationInput[]): number {
-  const now = new Date().toISOString();
-  const apps = inputs.map((input) => ({ ...input, id: newId(), createdAt: now, updatedAt: now }));
-  write([...apps, ...read()]);
-  return apps.length;
+export async function updateApplication(id: string, input: JobApplicationInput): Promise<void> {
+  if (typeof window === "undefined") return;
+
+  const client = getSupabaseClient();
+  if (!client) {
+    const next = (cache ?? readLocalStorage()).map((a) => (a.id === id ? { ...a, ...input, updatedAt: new Date().toISOString() } : a));
+    persistLocalFallback(next);
+    return;
+  }
+
+  try {
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      throw new Error("User belum login. Silakan login terlebih dahulu.");
+    }
+
+    const { error } = await client
+      .from("job_applications")
+      .update({
+        company: input.company,
+        position: input.position,
+        link: input.link,
+        status: input.status,
+        applied_date: input.appliedDate,
+        notes: input.notes,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .eq("user_id", userId);
+
+    if (error) throw error;
+    const next = (cache ?? readLocalStorage()).map((a) => (a.id === id ? { ...a, ...input, updatedAt: new Date().toISOString() } : a));
+    persistLocalFallback(next);
+    await syncFromSupabase();
+  } catch (e) {
+    console.warn("Supabase update gagal; fallback ke localStorage.", e);
+    const next = (cache ?? readLocalStorage()).map((a) => (a.id === id ? { ...a, ...input, updatedAt: new Date().toISOString() } : a));
+    persistLocalFallback(next);
+  }
 }
 
-export function updateApplication(id: string, input: JobApplicationInput): void {
-  const now = new Date().toISOString();
-  write(read().map((a) => (a.id === id ? { ...a, ...input, updatedAt: now } : a)));
-}
+export async function deleteApplication(id: string): Promise<void> {
+  if (typeof window === "undefined") return;
 
-export function deleteApplication(id: string): void {
-  write(read().filter((a) => a.id !== id));
+  const client = getSupabaseClient();
+  if (!client) {
+    const next = (cache ?? readLocalStorage()).filter((a) => a.id !== id);
+    persistLocalFallback(next);
+    return;
+  }
+
+  try {
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      throw new Error("User belum login. Silakan login terlebih dahulu.");
+    }
+
+    const { error } = await client.from("job_applications").delete().eq("id", id).eq("user_id", userId);
+    if (error) throw error;
+    const next = (cache ?? readLocalStorage()).filter((a) => a.id !== id);
+    persistLocalFallback(next);
+    await syncFromSupabase();
+  } catch (e) {
+    console.warn("Supabase delete gagal; fallback ke localStorage.", e);
+    const next = (cache ?? readLocalStorage()).filter((a) => a.id !== id);
+    persistLocalFallback(next);
+  }
 }
 
 export function replaceAllApplications(apps: JobApplication[]): void {
-  write(apps);
+  persistLocalFallback(apps);
 }

@@ -1,5 +1,5 @@
 import { i as __toESM } from "../_runtime.mjs";
-import { f as require_react } from "./@radix-ui/react-alert-dialog+[...].mjs";
+import { p as require_react } from "./@radix-ui/react-alert-dialog+[...].mjs";
 //#region node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 /**
@@ -555,6 +555,26 @@ var ListChecks = createLucideIcon("list-checks", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var LogIn = createLucideIcon("log-in", [
+	["path", {
+		d: "m10 17 5-5-5-5",
+		key: "1bsop3"
+	}],
+	["path", {
+		d: "M15 12H3",
+		key: "6jk70r"
+	}],
+	["path", {
+		d: "M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4",
+		key: "u53s6r"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var LogOut = createLucideIcon("log-out", [
 	["path", {
 		d: "m16 17 5-5-5-5",
@@ -705,4 +725,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { BookOpen as C, Activity as D, ArrowDownWideNarrow as E, BriefcaseBusiness as S, ArrowRight as T, ClipboardList as _, Search as a, CalendarDays as b, MessagesSquare as c, LayoutDashboard as d, Inbox as f, Download as g, ExternalLink as h, Trash2 as i, LogOut as l, FileSpreadsheet as m, Upload as n, Plus as o, Hourglass as p, TriangleAlert as r, Pencil as s, X as t, ListChecks as u, CircleX as v, ArrowUpNarrowWide as w, Briefcase as x, CircleCheck as y };
+export { BriefcaseBusiness as C, ArrowDownWideNarrow as D, ArrowRight as E, Activity as O, Briefcase as S, ArrowUpNarrowWide as T, Download as _, Search as a, CircleCheck as b, MessagesSquare as c, ListChecks as d, LayoutDashboard as f, ExternalLink as g, FileSpreadsheet as h, Trash2 as i, LogOut as l, Hourglass as m, Upload as n, Plus as o, Inbox as p, TriangleAlert as r, Pencil as s, X as t, LogIn as u, ClipboardList as v, BookOpen as w, CalendarDays as x, CircleX as y };

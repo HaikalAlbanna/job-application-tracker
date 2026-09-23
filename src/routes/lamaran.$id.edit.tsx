@@ -49,10 +49,15 @@ function EditPage() {
         key={app.id}
         initial={app}
         submitLabel="Simpan Perubahan"
-        onSubmit={(data) => {
-          updateApplication(app.id, data);
-          toast.success("Perubahan tersimpan.");
-          navigate({ to: "/lamaran" });
+        onSubmit={async (data) => {
+          try {
+            await updateApplication(app.id, data);
+            toast.success("Perubahan tersimpan.");
+            navigate({ to: "/lamaran" });
+          } catch (error) {
+            const message = error instanceof Error ? error.message : "Gagal memperbarui lamaran.";
+            toast.error(message);
+          }
         }}
       />
     </div>
