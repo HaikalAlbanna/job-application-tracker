@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ImportRouteImport } from './routes/import'
 import { Route as PanduanRouteImport } from './routes/panduan'
+import { Route as PengaturanRouteImport } from './routes/pengaturan'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth.forgot-password'
 import { Route as AuthLoginRouteImport } from './routes/auth.login'
 import { Route as AuthRegisterRouteImport } from './routes/auth.register'
@@ -33,6 +34,11 @@ const ImportRoute = ImportRouteImport.update({
 const PanduanRoute = PanduanRouteImport.update({
   id: '/panduan',
   path: '/panduan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PengaturanRoute = PengaturanRouteImport.update({
+  id: '/pengaturan',
+  path: '/pengaturan',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/import': typeof ImportRoute
   '/panduan': typeof PanduanRoute
+  '/pengaturan': typeof PengaturanRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/import': typeof ImportRoute
   '/panduan': typeof PanduanRoute
+  '/pengaturan': typeof PengaturanRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/import': typeof ImportRoute
   '/panduan': typeof PanduanRoute
+  '/pengaturan': typeof PengaturanRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/import'
     | '/panduan'
+    | '/pengaturan'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/import'
     | '/panduan'
+    | '/pengaturan'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/import'
     | '/panduan'
+    | '/pengaturan'
     | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ImportRoute: typeof ImportRoute
   PanduanRoute: typeof PanduanRoute
+  PengaturanRoute: typeof PengaturanRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       path: '/panduan'
       fullPath: '/panduan'
       preLoaderRoute: typeof PanduanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pengaturan': {
+      id: '/pengaturan'
+      path: '/pengaturan'
+      fullPath: '/pengaturan'
+      preLoaderRoute: typeof PengaturanRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/forgot-password': {
@@ -239,6 +259,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ImportRoute: ImportRoute,
   PanduanRoute: PanduanRoute,
+  PengaturanRoute: PengaturanRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,

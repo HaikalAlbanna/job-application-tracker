@@ -321,8 +321,7 @@ export async function addApplication(input: JobApplicationInput): Promise<JobApp
       throw new Error("User belum login. Silakan login terlebih dahulu.");
     }
 
-    const { data, error } = await client
-      .from("job_applications")
+    const { data, error } = await (client.from("job_applications") as any)
       .insert({ ...dbInsertPayload(input), user_id: userId })
       .select()
       .single();
@@ -367,9 +366,9 @@ export async function addManyApplications(inputs: JobApplicationInput[]): Promis
     }
 
     const rows = inputs.map((input) => ({ ...dbInsertPayload(input), user_id: userId }));
-    const { data, error } = await client.from("job_applications").insert(rows).select();
+    const { data, error } = await (client.from("job_applications") as any).insert(rows).select();
     if (error) throw error;
-    const imported = (data ?? []).map((row) => mapDbRow(row as Record<string, unknown>));
+    const imported = ((data ?? []) as Array<Record<string, unknown>>).map((row: Record<string, unknown>) => mapDbRow(row));
     const next = [...imported, ...(cache ?? readLocalStorage())];
     persistLocalFallback(next);
     return imported.length;
@@ -402,8 +401,7 @@ export async function updateApplication(id: string, input: JobApplicationInput):
       throw new Error("User belum login. Silakan login terlebih dahulu.");
     }
 
-    const { error } = await client
-      .from("job_applications")
+    const { error } = await (client.from("job_applications") as any)
       .update({
         company: input.company,
         position: input.position,

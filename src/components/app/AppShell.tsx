@@ -1,21 +1,38 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { BriefcaseBusiness, LayoutDashboard, ListChecks, FileSpreadsheet, BookOpen, Plus, LogIn } from "lucide-react";
-import { useEffect, useState, type ReactNode } from "react";
+import {
+  BriefcaseBusiness,
+  LayoutDashboard,
+  ListChecks,
+  FileSpreadsheet,
+  BookOpen,
+  Settings,
+  LogIn,
+  LogOut,
+  ShieldCheck,
+} from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { getSupabaseClient } from "@/lib/supabase";
+import { signOut } from "@/lib/auth";
+import { setupSessionSecurity } from "@/lib/session-security";
+import { executeAutoStatusCheck, getAutoStatusSettings } from "@/lib/auto-status";
+import { applicationStore } from "@/lib/applications";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/lamaran", label: "Daftar Lamaran", icon: ListChecks },
   { to: "/import", label: "Import Excel", icon: FileSpreadsheet },
   { to: "/panduan", label: "Panduan", icon: BookOpen },
+  { to: "/pengaturan", label: "Pengaturan", icon: Settings },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [authState, setAuthState] = useState<"loading" | "authed" | "guest">("loading");
+  const autoStatusCheckedRef = useRef(false);
 
   useEffect(() => {
     const isAuthRoute = location.pathname.startsWith("/auth");
@@ -66,6 +83,66 @@ export function AppShell({ children }: { children: ReactNode }) {
       data.subscription.unsubscribe();
     };
   }, [location.pathname, navigate]);
+
+  // Keamanan sesi: otomatis login jika dibuka <= 1 jam, otomatis logout jika > 1 jam tidak dibuka / inaktif
+  useEffect(() => {
+    if (authState !== "authed") return;
+
+    const cleanup = setupSessionSecurity({
+      timeoutMs: 60 * 60 * 1000, // 1 jam
+      onExpired: () => {
+        navigate({ to: "/auth/login" });
+      },
+    });
+
+    return cleanup;
+  }, [authState, navigate]);
+
+  // Otomatisasi status lamaran saat user login / data siap
+  useEffect(() => {
+    if (authState !== "authed" || autoStatusCheckedRef.current) return;
+
+    const runAutoStatus = async () => {
+      const settings = getAutoStatusSettings();
+      if (!settings.enabled) return;
+
+      const apps = applicationStore.getSnapshot();
+      if (apps.length === 0) return;
+
+      autoStatusCheckedRef.current = true;
+      try {
+        const result = await executeAutoStatusCheck(apps, settings);
+        if (result.updatedCount > 0) {
+          toast.info(
+            `Pembaruan Otomatis: ${result.updatedCount} status lamaran disesuaikan (Menunggu Review / Tidak Ada Kabar).`,
+            {
+              duration: 5000,
+              action: {
+                label: "Lihat",
+                onClick: () => navigate({ to: "/pengaturan" }),
+              },
+            },
+          );
+        }
+      } catch (err) {
+        console.error("Gagal menjalankan pemeriksaan status otomatis", err);
+      }
+    };
+
+    // Beri jeda singkat agar store terhidrasi
+    const timer = setTimeout(runAutoStatus, 1500);
+    return () => clearTimeout(timer);
+  }, [authState, navigate]);
+
+  const handleHeaderLogout = async () => {
+    try {
+      await signOut();
+      toast.success("Berhasil logout.");
+      navigate({ to: "/auth/login" });
+    } catch {
+      toast.error("Gagal logout.");
+    }
+  };
 
   const isAuthRoute = location.pathname.startsWith("/auth");
 
@@ -121,14 +198,21 @@ export function AppShell({ children }: { children: ReactNode }) {
               </span>
             </Link>
 
-            <Button asChild size="sm" className="shadow-float sm:hidden">
-              <Link to="/lamaran/baru">
-                <Plus className="size-4" /> <span>Tambah</span>
-              </Link>
+            {/* Tombol Logout untuk tampilan mobile */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleHeaderLogout}
+              className="gap-1 text-xs text-muted-foreground hover:text-foreground sm:hidden"
+              title="Logout akun"
+            >
+              <LogOut className="size-4" />
+              <span>Keluar</span>
             </Button>
           </div>
 
-          <nav className="flex items-center gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] pb-1 sm:pb-0 sm:flex-1 sm:justify-center">
+          {/* Navigasi Utama */}
+          <nav className="flex items-center gap-1 overflow-x-auto [-ms-overflow-style:none] scrollbar-none pb-1 sm:pb-0 sm:flex-1 sm:justify-center">
             <div className="flex min-w-max items-center gap-1">
               {NAV.map(({ to, label, icon: Icon, ...rest }) => (
                 <Link
@@ -145,11 +229,27 @@ export function AppShell({ children }: { children: ReactNode }) {
             </div>
           </nav>
 
-          <Button asChild size="sm" className="hidden shadow-float sm:inline-flex">
-            <Link to="/lamaran/baru">
-              <Plus className="size-4" /> <span>Tambah Lamaran</span>
-            </Link>
-          </Button>
+          {/* Sisi Kanan Desktop: Status Sesi & Logout */}
+          <div className="hidden sm:flex sm:items-center sm:gap-2">
+            <span
+              className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-semibold text-emerald-600"
+              title="Autentikasi keamanan aktif: Sesi otomatis bertahan 1 jam"
+            >
+              <ShieldCheck className="size-3.5" />
+              <span>Sesi Aman 1 Jam</span>
+            </span>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleHeaderLogout}
+              className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+              title="Logout akun"
+            >
+              <LogOut className="size-4" />
+              <span>Logout</span>
+            </Button>
+          </div>
         </div>
       </header>
 

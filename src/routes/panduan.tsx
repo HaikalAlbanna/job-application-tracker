@@ -30,14 +30,14 @@ function GuidePage() {
 
       <Section title="1. Mencatat lamaran">
         <ol className="list-decimal space-y-1.5 pl-5">
-          <li>Klik <strong>Tambah Lamaran</strong> di pojok kanan atas.</li>
+          <li>Klik <strong>Tambah Lamaran</strong> di halaman Dashboard atau Daftar Lamaran.</li>
           <li>Isi nama perusahaan dan posisi (wajib), link pendaftaran, status, dan catatan.</li>
           <li>Tanggal pendaftaran terisi otomatis dengan tanggal hari ini (WIB) — ubah manual jika mencatat lamaran lama.</li>
           <li>Buka <Link to="/lamaran" className="font-semibold text-primary hover:underline">Daftar Lamaran</Link> untuk mencari, memfilter status, mengurutkan tanggal, mengedit, atau menghapus.</li>
         </ol>
       </Section>
 
-      <Section title="2. Arti setiap status">
+      <Section title="2. Arti setiap status & Otomatisasi Alur">
         <ul className="grid gap-2 sm:grid-cols-2">
           {STATUSES.map((s) => (
             <li key={s.value} className="flex items-start gap-3 rounded-lg bg-muted/50 p-3">
@@ -46,17 +46,31 @@ function GuidePage() {
             </li>
           ))}
         </ul>
-        <p className="mt-3 text-xs text-muted-foreground">
-          Status <em>Baru Didaftarkan</em> sampai <em>Offering</em> dihitung sebagai lamaran <strong>aktif</strong> di dashboard.
-        </p>
+        <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-3.5 text-xs text-muted-foreground space-y-1.5">
+          <p className="font-semibold text-foreground">Fitur Otomatisasi Status (Dapat diatur di menu <Link to="/pengaturan" className="text-primary hover:underline font-bold">Pengaturan</Link>):</p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li><strong>3x 24 Jam:</strong> Lamaran yang baru didaftarkan akan otomatis berpindah status ke <strong>Menunggu Review</strong> setelah 3 hari.</li>
+            <li><strong>10 Hari:</strong> Lamaran yang tidak diperbarui selama 10 hari akan otomatis dialihkan ke status <strong>Tidak Ada Kabar</strong>.</li>
+          </ul>
+        </div>
       </Section>
 
-      <Section title="3. Import data dari Excel">
+      <Section title="3. Keamanan Sesi Akun (Timeout 1 Jam)">
+        <p>
+          Untuk kenyamanan sekaligus menjaga keamanan privasi Anda:
+        </p>
+        <ul className="mt-2 list-disc space-y-1.5 pl-5 text-xs text-muted-foreground">
+          <li><strong>Otomatis Tetap Login:</strong> Jika Anda membuka kembali aplikasi dalam rentang waktu kurang dari 1 jam sejak aktivitas terakhir, Anda akan otomatis langsung masuk tanpa perlu memasukkan password lagi.</li>
+          <li><strong>Keamanan Inaktivitas:</strong> Jika aplikasi tidak dibuka atau dibiarkan tanpa aktivitas selama lebih dari 1 jam, sesi akan otomatis kedaluwarsa demi keamanan akun Anda.</li>
+        </ul>
+      </Section>
+
+      <Section title="4. Import data dari Excel">
         <p>
           Buka <Link to="/import" className="font-semibold text-primary hover:underline">Import Excel</Link>, pilih file .xlsx/.xls, periksa preview, lalu klik <strong>Tambahkan</strong>. Data lama tidak dihapus — data hasil import ditambahkan ke daftar.
         </p>
         <div className="mt-4 overflow-x-auto rounded-lg border">
-          <table className="w-full min-w-[720px] text-xs">
+          <table className="w-full min-w-180 text-xs">
             <thead className="bg-muted/60">
               <tr>
                 {EXCEL_HEADERS.map((h) => (
