@@ -9,7 +9,7 @@ export interface AutoStatusSettings {
   enabled: boolean;
   /** Jumlah hari lamaran 'baru' otomatis berpindah ke 'menunggu' (3x 24 jam = 3 hari) */
   reviewAfterDays: number;
-  /** Jumlah hari lamaran yang tidak di-update berpindah ke 'tidak_ada_kabar' (10 hari) */
+  /** Jumlah hari sejak tanggal didaftarkan untuk otomatis berubah ke 'tidak_ada_kabar' (10 hari) */
   noUpdateAfterDays: number;
   /** Waktu eksekusi pemeriksaan terakhir (ISO string) */
   lastRunAt: string | null;
@@ -117,33 +117,30 @@ export async function executeAutoStatusCheck(
   }> = [];
 
   for (const app of applications) {
-    const createdAtMs = parseDateToMs(app.createdAt || app.appliedDate);
-    const updatedAtMs = parseDateToMs(app.updatedAt || app.createdAt || app.appliedDate);
+    // Tanggal kapan lamaran didaftarkan/diajukan
+    const registeredTimeMs = parseDateToMs(app.appliedDate || app.createdAt);
+    const elapsedSinceRegistered = now - registeredTimeMs;
 
-    // Aturan 1: Lamaran berstatus 'baru' sudah >= 3x 24 jam sejak didaftarkan
-    if (app.status === "baru") {
-      const elapsedSinceCreated = now - createdAtMs;
-      if (elapsedSinceCreated >= reviewThresholdMs) {
-        updatesToApply.push({
-          app,
-          newStatus: "menunggu",
-          reason: `Sudah ${settings.reviewAfterDays}x 24 jam sejak didaftarkan (otomatis ke Menunggu Review)`,
-        });
-        continue; // lanjut ke aplikasi berikutnya
-      }
+    // Aturan 2: Jika sudah >= 10 hari sejak lamaran didaftarkan dan masih belum ada kabar (status 'baru' atau 'menunggu')
+    // Otomatis berubah status menjadi 'tidak_ada_kabar'
+    if ((app.status === "baru" || app.status === "menunggu") && elapsedSinceRegistered >= noUpdateThresholdMs) {
+      updatesToApply.push({
+        app,
+        newStatus: "tidak_ada_kabar",
+        reason: `Sudah ${settings.noUpdateAfterDays} hari sejak tanggal lamaran didaftarkan (otomatis ke Tidak Ada Kabar)`,
+      });
+      continue;
     }
 
-    // Aturan 2: Lamaran berstatus 'menunggu' (atau aktif menunggu kabar) tidak di-update selama >= 10 hari
-    // Catatan: status terminal (diterima, ditolak, mundur, ditutup, atau sudah tidak_ada_kabar) dilewati
-    if (app.status === "menunggu") {
-      const elapsedSinceUpdate = now - updatedAtMs;
-      if (elapsedSinceUpdate >= noUpdateThresholdMs) {
-        updatesToApply.push({
-          app,
-          newStatus: "tidak_ada_kabar",
-          reason: `Sudah ${settings.noUpdateAfterDays} hari tidak ada pembaruan (otomatis ke Tidak Ada Kabar)`,
-        });
-      }
+    // Aturan 1: Jika lamaran berstatus 'baru' dan sudah >= 3x 24 jam (3 hari) sejak didaftarkan
+    // Otomatis berubah status menjadi 'menunggu' (Menunggu Review)
+    if (app.status === "baru" && elapsedSinceRegistered >= reviewThresholdMs) {
+      updatesToApply.push({
+        app,
+        newStatus: "menunggu",
+        reason: `Sudah ${settings.reviewAfterDays}x 24 jam sejak didaftarkan (otomatis ke Menunggu Review)`,
+      });
+      continue;
     }
   }
 

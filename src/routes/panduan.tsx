@@ -50,7 +50,7 @@ function GuidePage() {
           <p className="font-semibold text-foreground">Fitur Otomatisasi Status (Dapat diatur di menu <Link to="/pengaturan" className="text-primary hover:underline font-bold">Pengaturan</Link>):</p>
           <ul className="list-disc pl-5 space-y-1">
             <li><strong>3x 24 Jam:</strong> Lamaran yang baru didaftarkan akan otomatis berpindah status ke <strong>Menunggu Review</strong> setelah 3 hari.</li>
-            <li><strong>10 Hari:</strong> Lamaran yang tidak diperbarui selama 10 hari akan otomatis dialihkan ke status <strong>Tidak Ada Kabar</strong>.</li>
+            <li><strong>10 Hari:</strong> Lamaran yang sudah lebih dari 10 hari sejak tanggal didaftarkan sampai hari ini akan otomatis dialihkan ke status <strong>Tidak Ada Kabar</strong>.</li>
           </ul>
         </div>
       </Section>

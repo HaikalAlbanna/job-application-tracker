@@ -150,8 +150,7 @@ function SettingsPage() {
                   Aturan 2: Tidak Ada Kabar (10 Hari)
                 </p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Lamaran yang berstatus menunggu review dan tidak mendapat pembaruan selama{" "}
-                  <strong>10 hari</strong> akan otomatis diubah ke status{" "}
+                  Lamaran yang sudah lebih dari <strong>10 hari</strong> sejak tanggal didaftarkan/ditambahkan sampai hari ini (dan belum ada kabar lanjut) akan otomatis diubah ke status{" "}
                   <StatusBadge status="tidak_ada_kabar" className="inline-flex py-0.5 text-[10px]" />.
                 </p>
               </div>
